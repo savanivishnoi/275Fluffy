@@ -66,7 +66,7 @@ public class RedisHandler implements DbHandler {
 	public boolean insertData(String key, int sequenceId, String value) {
 
 		try {
-			jedis.hset(Long.toString(encryptKey(key)), Integer.toString(sequenceId), Long.toString(encryptKey(value)));
+			jedis.hset(Long.toString(encryptKey(key)), Integer.toString(sequenceId), value);
 			return true;			
 		} catch (Exception e) {
 			logger.error("Cannot Insert");
@@ -88,7 +88,7 @@ public class RedisHandler implements DbHandler {
 				
 				for (String b : sequenceIds) {
 
-					data.put(b, Long.toString(encryptKey(jedis.hget(Long.toString(encryptedKey), b))));
+					data.put(b, jedis.hget(Long.toString(encryptedKey), b));
 					
 
 				}
@@ -115,7 +115,7 @@ public class RedisHandler implements DbHandler {
 
 			for (String b : sequenceIds) {
 
-				data.put(b, Long.toString(encryptKey(jedis.hget(Long.toString(encryptedKey), b))));
+				data.put(b, jedis.hget(Long.toString(encryptedKey), b));
 				jedis.hdel(Long.toString(encryptedKey), b);
 				System.out.println(data.size());
 			}	
