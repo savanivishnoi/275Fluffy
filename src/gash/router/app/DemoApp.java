@@ -88,7 +88,7 @@ public class DemoApp implements CommListener {
 				// temp = false;
 				DNSConnectionInit dnsConnectionInit = new DNSConnectionInit();
 				MessageClient mc;
-					System.out.println("HIIIII");
+			
 					Thread.sleep(1000);
 					if(MessageClient.leaderIp!=null){
 						System.out.println("will connect to leader.."+MessageClient.leaderIp);
