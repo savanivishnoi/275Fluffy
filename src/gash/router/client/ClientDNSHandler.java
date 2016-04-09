@@ -10,14 +10,14 @@ public class ClientDNSHandler extends SimpleChannelInboundHandler<GlobalCommandM
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, GlobalCommandMessage msg) throws Exception {
-		System.out.println("Client got");
+
 		handleMessage(msg, ctx.channel());
 
 	}
 	public void handleMessage(GlobalCommandMessage msg, Channel channel) {
 		try {
 				if(msg.hasResponse()){
-					System.out.println("resp..came dude.......!"+msg);
+					//Set Leader IP, recieved from DNS..
 					MessageClient.leaderIp = msg.getResponse().getIp();
 				}
 			System.out.println("HostIP ");
