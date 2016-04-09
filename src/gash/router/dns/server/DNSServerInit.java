@@ -1,6 +1,7 @@
 package gash.router.dns.server;
 
 import ClientFacingMapping.Mapping.ClientFacingMessage;
+import global.Global.GlobalCommandMessage;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
