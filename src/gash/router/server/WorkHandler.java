@@ -51,6 +51,7 @@ import pipe.work.Work.Task;
 import pipe.work.Work.TaskAction;
 import pipe.work.Work.WorkMessage;
 import pipe.work.Work.WorkState;
+import pipe.work.Work.WorkStealer;
 import routing.Pipe;
 
 /**
@@ -91,6 +92,10 @@ public class WorkHandler extends SimpleChannelInboundHandler<WorkMessage> {
 
 			// TODO How can you implement this without if-else statements?
 			try {
+				if(msg.getSecret() != CommonUtils.SECRET_KEY){
+					logger.error("Invalid secret key.Ignoring the message");
+					return;
+					}
 
 				if (msg.hasBeat()) {
 					Heartbeat hb = msg.getBeat();
@@ -157,9 +162,24 @@ public class WorkHandler extends SimpleChannelInboundHandler<WorkMessage> {
 							}
 
 						} 
-					} else if (msg.hasState()) {
-						WorkState s = msg.getState();
-					} else if (msg.hasLeader()) {
+					} else if (msg.hasState() && (msg.getState().getSteal())) { 
+						if(state.isLeader){
+							int wrkStealerNode=msg.getSteal().getNodeId();
+							Header.Builder hb = Header.newBuilder();
+							hb.setNodeId(state.getConf().getNodeId());
+							hb.setDestination(-1);
+							hb.setTime(System.currentTimeMillis());
+
+							WorkMessage.Builder wb = WorkMessage.newBuilder();
+							wb.setHeader(hb);
+							wb.setSecret(CommonUtils.SECRET_KEY);
+							
+							WorkStealer.Builder ws= WorkStealer.newBuilder();
+							ws.setNodeId(wrkStealerNode);
+							wb.setSteal(ws);
+							channel.writeAndFlush(wb);
+						}
+				}  else if (msg.hasLeader()) {
 						LeaderElectionUtils leaderElectionThread;
 						if (emon != null)
 							leaderElectionThread = emon.geLeaderElectionThread();
@@ -176,7 +196,7 @@ public class WorkHandler extends SimpleChannelInboundHandler<WorkMessage> {
 
 							WorkMessage.Builder wb = WorkMessage.newBuilder();
 							wb.setHeader(hb);
-							wb.setSecret(1111111);
+							wb.setSecret(CommonUtils.SECRET_KEY);
 							LeaderStatus.Builder lb = LeaderStatus.newBuilder();
 							lb.setState(LeaderState.LEADERALIVE);
 

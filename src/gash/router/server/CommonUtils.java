@@ -63,7 +63,7 @@ public class CommonUtils {
 		
 		WorkMessage.Builder wb = WorkMessage.newBuilder();
 		wb.setHeader(hb);
-		wb.setSecret(1111111);
+		wb.setSecret(CommonUtils.SECRET_KEY);
 		LeaderStatus.Builder lb = LeaderStatus.newBuilder();
 		lb.setState(ls);
 		lb.setNodeState(nState);

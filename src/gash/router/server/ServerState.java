@@ -21,6 +21,26 @@ public class ServerState {
 	private int prevTerm;
 	private static HashMap<Integer, Channel> channelMap=new HashMap<Integer, Channel>();
 	private Channel readCh;
+	private boolean checkStealNode;
+	private int StealNodeId;
+	
+	public boolean isCheckStealNode() {
+		return checkStealNode;
+	}
+
+	public void setCheckStealNode(boolean checkStealNode) {
+		this.checkStealNode = checkStealNode;
+	}
+
+	public int getStealNodeId() {
+		return StealNodeId;
+	}
+
+	public void setStealNodeId(int stealNodeId) {
+		StealNodeId = stealNodeId;
+	}
+	
+	
 	public RoutingConf getConf() {
 		return conf;
 	}

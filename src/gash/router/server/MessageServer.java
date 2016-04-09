@@ -35,6 +35,7 @@ import gash.router.server.edges.EdgeMonitor;
 import gash.router.server.queuemanagement.ReadHashing;
 import gash.router.server.tasks.NoOpBalancer;
 import gash.router.server.tasks.TaskList;
+import gash.router.server.tasks.WrkBalancer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -264,6 +265,10 @@ public class MessageServer {
 			DataProcessingThread dataProcessor=new DataProcessingThread(state.getTasks(),state);
 			Thread th=new Thread(dataProcessor);
 			th.start();
+			
+			WrkBalancer wrkbalance= new WrkBalancer(state);
+			Thread wrb=new Thread(wrkbalance);
+			wrb.start();
 		}
 
 		//enqueueing the task list
@@ -291,6 +296,10 @@ public class MessageServer {
 			if(state.isLeader()){
 				ReadHashing rh=new ReadHashing();
 				int nodeId= rh.roundRobin(state);
+				if(state.isCheckStealNode() && state.getTasks().numEnqueued()<3 ){
+					nodeId=state.getStealNodeId();
+					state.getTasks().rebalance();
+				}
 				WorkMessage wm=state.getEmon().createTaskMessage(task.getMessage());
 				EdgeInfo ei=state.getEmon().getOutBoundEdges().getNode(nodeId);
 				if(ei.getChannel()==null){

@@ -36,7 +36,7 @@ import gash.router.server.LeaderElectionUtils;
 import gash.router.server.ServerState;
 import gash.router.server.WorkHandler;
 import gash.router.server.WorkInit;
-import gash.router.server.queuemanagement.QueueManagementWorker;
+import gash.router.server.tasks.CalCpuLoad;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -73,7 +73,6 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	private LeaderElectionUtils leaderElec;
 	private int enqueuedTask;
 	private int processedTask;
-	private QueueManagementWorker queueManagementWorker = new QueueManagementWorker(state);
 	private static int taskSeqId=0;
 	InetAddress[] localaddr;
 
@@ -140,8 +139,8 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	private WorkMessage createHB(EdgeInfo ei) {
 		WorkState.Builder sb = WorkState.newBuilder();
 		sb.setEnqueued(getEnqueuedTasks());
-		sb.setProcessed(getEnqueuedTasks());
-		sb.setCpuLoad(queueManagementWorker.calcCPULoad());
+		sb.setCpuLoad(CalCpuLoad.checkCpuLoadOptions());
+		sb.setSteal(state.isCheckStealNode());
 
 		Heartbeat.Builder bb = Heartbeat.newBuilder();
 		bb.setState(sb);
@@ -153,12 +152,11 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		hb.setDestination(-1);
 		hb.setTime(System.currentTimeMillis());
 
-		WorkMessage.Builder wb = WorkMessage.newBuilder();
+		WorkMessage.Builder wb = WorkMessage.newBuilder(); 
 		wb.setHeader(hb);
 		wb.setBeat(bb);
-		wb.setSecret(1111111);
+		wb.setSecret(CommonUtils.SECRET_KEY);
 		return wb.build();
-
 	}
 
 	
@@ -337,17 +335,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 			return false;
 	}
 
-	public void queueManagement(ServerState s, EdgeInfo ei) {
-		QueueManagementWorker queueManagement = new QueueManagementWorker(state);
-		Thread thread = new Thread(queueManagement);
-		thread.setDaemon(true);
-		thread.start();
-		try {
-			Thread.sleep(6000);
-		} catch (InterruptedException e) {
-		}
 
-	}
 
 //Sending tasks messages while data replication to othe nodes
 	public synchronized void sendTaskMessages(WorkMessage wm) {
@@ -421,7 +409,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		wb.setHeader(hb);
 		wb.setTask(tm);
 		//checking secret key
-		wb.setSecret(123);
+		wb.setSecret(CommonUtils.SECRET_KEY);
 		return wb.build();
 
 	}
@@ -441,7 +429,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		wb.setHeader(hb);
 		wb.setTask(tm);
 		//checking secret key
-		wb.setSecret(123);
+		wb.setSecret(CommonUtils.SECRET_KEY);
 		return wb.build();
 
 	}

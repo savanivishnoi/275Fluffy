@@ -9,43 +9,22 @@
 # have change.
 #
 
-# project_base="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-# # which protoc that you built (if not in your path)
-# PROTOC_HOME=/usr/local/protobuf-2.5.0/
-
-# if [ -d ${project_base}/generated ]; then
-#   echo "removing contents of ${project_base}/generated"
-#   rm -r ${project_base}/generated/*
-# else
-#   echo "creating directory ${project_base}/generated"
-#   mkdir ${project_base}/generated
-# fi
-
-
-# $PROTOC_HOME/bin/protoc --proto_path=${project_base}/resources --java_out=${project_base}/generated ${project_base}/resources/common.proto
-# $PROTOC_HOME/bin/protoc --proto_path=${project_base}/resources --java_out=${project_base}/generated ${project_base}/resources/election.proto
-# $PROTOC_HOME/bin/protoc --proto_path=${project_base}/resources --java_out=${project_base}/generated ${project_base}/resources/work.proto
-
-# $PROTOC_HOME/bin/protoc --proto_path=${project_base}/resources --java_out=${project_base}/generated ${project_base}/resources/pipe.proto
-
-
 project_base="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# which protoc that you built (if not in your path)
-echo $project_base
-PROTOC_HOME=/f/CMPE275/protoc-2.6.1-win32
+#which protoc that you built (if not in your path)
+#PROTOC_HOME=/usr/local/protobuf-2.5.0/
 
-#  if [ -d ${project_base}/generated ]; then
-#    echo "removing contents of ${project_base}/generated"
-#    rm -r ${project_base}/generated/*
-# else
-#    echo "creating directory ${project_base}/generated"
-#   mkdir ${project_base}/generated
-#  fi
+if [ -d ${project_base}/generated ]; then
+  echo "removing contents of ${project_base}/generated"
+  rm -r ${project_base}/generated/pipe/work/*
+else
+  echo "creating directory ${project_base}/generated"
+  mkdir ${project_base}/generated
+fi
 
+cd ${project_base}
 
-$PROTOC_HOME/protoc --proto_path=${project_base}/resources --java_out=${project_base}/generated ${project_base}/resources/common.proto
-$PROTOC_HOME/protoc --proto_path=${project_base}/resources --java_out=${project_base}/generated ${project_base}/resources/election.proto
-$PROTOC_HOME/protoc --proto_path=${project_base}/resources --java_out=${project_base}/generated ${project_base}/resources/work.proto
-$PROTOC_HOME/protoc --proto_path=${project_base}/resources --java_out=${project_base}/generated ${project_base}/resources/pipe.proto
+#protoc --proto_path=resources/ --java_out=generated/ resources/common.proto
+#protoc --proto_path=resources/ --java_out=generated/ resources/election.proto
+protoc --proto_path=resources/ --java_out=generated/ resources/work.proto
+#protoc --proto_path=resources/ --java_out=generated/ resources/pipe.proto
