@@ -41,10 +41,10 @@ public class DNSServerHandler  extends SimpleChannelInboundHandler<GlobalCommand
 	public void handleMessage(GlobalCommandMessage msg, Channel channel) {
 		try {
 			//IPList.setHostIP(msg.getIp());
-			System.out.println("hey..msg came"+msg.hasQuery());
+		
 			if(msg.hasQuery()){
 				Query query = msg.getQuery();
-				System.out.println("hey..msg came"+msg.hasQuery());
+			
 				if(query.getAction().equals(Action.WHICHSERVER)){
 					String leaderIp = getLeaderFileInfo();
 					System.out.println("LeaderInfo is "+getLeaderFileInfo());
@@ -63,7 +63,9 @@ public class DNSServerHandler  extends SimpleChannelInboundHandler<GlobalCommand
 					System.out.println("in init cfm");
 					channel.writeAndFlush(gcb.build());
 
-				}else if(msg.getQuery().getAction().equals(Storage.Action.GET)){
+				}
+				//handle read from other Clusters
+				else if(msg.getQuery().getAction().equals(Storage.Action.GET)){
 					System.out.println("In query  "+msg.getQuery().getKey());
 					
 					read(msg, channel);
@@ -72,7 +74,7 @@ public class DNSServerHandler  extends SimpleChannelInboundHandler<GlobalCommand
 					
 			}
 			if(msg.hasResponse()){
-				System.out.println("resp.. came dude.................................................!"+msg);
+		
 
 			}
 			System.out.println("HostIP ");
@@ -88,7 +90,7 @@ public class DNSServerHandler  extends SimpleChannelInboundHandler<GlobalCommand
 		try {
 			String FilePath=System.getProperty("user.dir").replace("\\", "/");
 			content = new Scanner(new File(FilePath+"/leaderinfo.txt")).useDelimiter("\\Z").next();
-			System.out.println(content+"the contents...............................................");
+		
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -133,7 +135,7 @@ public class DNSServerHandler  extends SimpleChannelInboundHandler<GlobalCommand
 		
 	} catch (Exception e) {
 		// TODO Auto-generated catch block
-		System.out.println("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
+	
 		e.printStackTrace();
 	}
 	
