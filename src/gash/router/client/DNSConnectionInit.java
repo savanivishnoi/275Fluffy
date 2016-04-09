@@ -15,7 +15,7 @@ import storage.Storage.Action;
 
 public  class DNSConnectionInit {
 	private  EventLoopGroup group;
-	private  String host = "127.0.0.1";
+	private  String host = "192.168.1.31";
 	//private  String host = CommonUtils.DNS_HOST;// ip of dns server
 	private  int port = CommonUtils.DNS_PORT; //port of the dns server
 	private  ChannelFuture channel;
