@@ -53,7 +53,7 @@ public class MongoHandler implements DbHandler
 			DBObject doc=new BasicDBObject();	
 			doc.put("Filename", encryptKey(key));
 			doc.put("ChunkNumber", sequenceId);
-			doc.put("FileData", encryptKey(value));
+			doc.put("FileData", value);
 			col.insert(doc);
 			return true;
 		} catch (Exception e) {
@@ -81,7 +81,7 @@ public class MongoHandler implements DbHandler
 			DBObject t=cursor.next();
 			seq=t.get("ChunkNumber").toString();
 			val=t.get("FileData").toString();
-			data.put(seq, Long.toString(encryptKey(val)));	
+			data.put(seq, val);	
 		}
 		
 		return data;
@@ -105,7 +105,7 @@ public class MongoHandler implements DbHandler
 			DBObject t=cursor.next();
 			seq=t.get("ChunkNumber").toString();
 			val=t.get("FileData").toString();
-			data.put(seq, Long.toString(encryptKey(val)));	
+			data.put(encryptKey(val));	
 		}
 		
 		col.remove(doc);
